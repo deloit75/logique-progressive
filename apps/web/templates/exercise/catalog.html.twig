@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Choisir un exercice — Logique Progressive</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #23345b; background: #f5f7fc; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1030px; margin: auto; padding: 38px 24px; }
+    nav a { color: #293d79; }
+    .heading { margin: 40px 0 28px; }
+    h1 { margin: 10px 0; font-size: clamp(2rem, 5vw, 3rem); }
+    .muted { color: #65728c; line-height: 1.6; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .card { display: flex; flex-direction: column; border: 1px solid #e1e6f0; border-radius: 17px; padding: 24px; background: white; text-decoration: none; color: inherit; }
+    .card:hover, .card:focus-visible { border-color: #506ba5; box-shadow: 0 5px 25px #23345b10; }
+    .symbol { font-size: 2rem; }
+    .tag { font-size: .79rem; border-radius: 20px; padding: 5px 10px; background: #e6ecfa; display: inline-block; margin-top: 16px; }
+    .card h2 { font-size: 1.2rem; margin-bottom: 5px; }
+    .card p { font-size: .94rem; line-height: 1.55; color: #596986; }
+    .cta { margin-top: auto; color: #29477c; font-weight: 650; }
+    .legacy { margin-top: 30px; padding: 20px 24px; border: 1px solid #dfe5f1; border-radius: 14px; background: white; }
+  </style>
+</head>
+<body>
+<main>
+  <nav><a href="{{ path('app_home') }}">← Accueil</a></nav>
+  <section class="heading">
+    <p class="muted">Première bibliothèque · CM2 à 6e</p>
+    <h1>Choisis ton défi</h1>
+    <p class="muted">Chaque défi change ses données lorsque tu recommences. Tu avances par étapes, puis tu découvres la démarche et les notions utilisées. Aucun compte n’est nécessaire pour cette démonstration.</p>
+  </section>
+  <section class="grid" aria-label="Catalogue des exercices">
+    {% for slug, exercise in exercises %}
+      <a class="card" href="{{ path('exercise_play', {slug: slug}) }}">
+        <span class="symbol" aria-hidden="true">{{ exercise.icon }}</span>
+        <div><span class="tag">{{ exercise.level }} · {{ exercise.duration }} min</span></div>
+        <h2>{{ exercise.title }}</h2>
+        <p>{{ exercise.subject }} — {{ exercise.skill }}</p>
+        <span class="cta">Commencer →</span>
+      </a>
+    {% endfor %}
+  </section>
+  <div class="legacy">
+    <strong>Défi précédent :</strong>
+    <a href="{{ path('exercise_crystals') }}">Le mystère des cristaux</a>.
+    Il reste disponible dans cette première version.
+  </div>
+  <p class="muted">Les étoiles illustrent la réussite de chaque exercice. Aucun résultat n’est enregistré, aucune minute d’écran n’est créditée.</p>
+</main>
+</body>
+</html>
