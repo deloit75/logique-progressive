@@ -1,0 +1,33 @@
+# Composer
+/vendor/
+
+# Symfony : cache, logs, fichiers locaux et secrets d'exécution
+/var/
+/.env.local
+/.env.*.local
+/.phpunit.cache/
+/.phpunit.result.cache
+/phpunit.xml
+/auth.json
+
+# Fichiers temporaires et IDE locaux
+/.idea/
+*.swp
+*.swo
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Build front-end (si utilisé ultérieurement)
+/node_modules/
+/public/build/
+
+# Données et configurations de développement privées
+/backups/
+/dumps/
+*.sql
+*.sql.gz
+*.sqlite
+*.log
+
+# Garder les exemples de configuration versionnés (.env.example, etc.)
