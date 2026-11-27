@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Logique Progressive</title>
+
+    <style>
+        :root {
+            font-family: system-ui, sans-serif;
+            color: #23345b;
+            background: #f5f7fc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 32px 24px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: 750;
+        }
+
+        .badge {
+            background: #e4eafb;
+            color: #354d8d;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: .85rem;
+        }
+
+        .hero {
+            padding: 90px 0 65px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.15;
+            letter-spacing: -.04em;
+            margin: 0 auto 24px;
+            max-width: 750px;
+        }
+
+        .hero p {
+            color: #61708f;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            max-width: 640px;
+            margin: auto;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e4e8f2;
+            border-radius: 16px;
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin: 12px 0;
+        }
+
+        .card p {
+            color: #687590;
+            line-height: 1.6;
+        }
+
+        .symbol {
+            font-size: 2rem;
+        }
+
+        footer {
+            text-align: center;
+            color: #8490a6;
+            padding: 65px 0 25px;
+            font-size: .9rem;
+        }
+
+        @media (max-width: 650px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 65px 0 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <header>
+            <div class="brand">Logique Progressive</div>
+            <span class="badge">Prototype</span>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1>Apprendre à raisonner,
+                    un défi à la fois.</h1>
+
+                <p>
+                    Des exercices de logique et de
+                    mathématiques adaptés à ton niveau,
+                    du primaire au lycée.
+                </p>
+            </section>
+
+            <section class="cards"
+                     aria-label="Les activités proposées">
+
+                <article class="card">
+                    <div class="symbol" aria-hidden="true">🧩</div>
+                    <h2>Logique</h2>
+                    <p>
+                        Résous des énigmes et développe
+                        ton raisonnement.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <div class="symbol" aria-hidden="true">🔢</div>
+                    <h2>Mathématiques</h2>
+                    <p>
+                        Progresse avec des exercices
+                        adaptés à tes compétences.
+                    </p>
+                </article>
+
+                <article class="card">
+                    <div class="symbol" aria-hidden="true">⭐</div>
+                    <h2>Progression</h2>
+                    <p>
+                        Découvre tes réussites et
+                        les notions à approfondir.
+                    </p>
+                </article>
+
+            </section>
+        </main>
+
+        <footer>
+            Logique Progressive — Version de développement
+        </footer>
+
+    </div>
+</body>
+</html>
