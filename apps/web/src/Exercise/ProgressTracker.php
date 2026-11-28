@@ -136,7 +136,7 @@ final class ProgressTracker
         }
 
         $last = $state['last'] ?? null;
-        $weakGroup = is_array($last) && ($last['stars'] ?? 5) <= 2
+        $weakGroup = is_array($last) && ($last['stars'] ?? 5) <= 3
             ? ($last['group'] ?? null) : null;
 
         if (is_string($weakGroup)) {
