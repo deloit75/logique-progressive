@@ -6,12 +6,14 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use App\Exercise\ExerciseLibrary;
 use App\Exercise\ExerciseScorer;
+use App\Exercise\ExerciseScaffolder;
 use App\Exercise\ExerciseToken;
 use App\Exercise\ProgressTracker;
 
 $progress = new ProgressTracker();
 $library = new ExerciseLibrary();
 $scorer = new ExerciseScorer();
+$scaffolder = new ExerciseScaffolder();
 $tokens = new ExerciseToken('test-secret-only');
 
 $state = [];
@@ -76,7 +78,20 @@ foreach ($library->all() as $slug => $meta) {
 
             $exercise = $library->build($slug, $parameters);
             $steps = $exercise['steps'];
+            $asked = $scaffolder->select($steps, $tier);
+            $expectedCount = 5 - $tier;
+
+            if (count($asked) !== $expectedCount
+                || array_sum(array_column($asked, 'weight')) !== 5
+                || array_column($asked, 'id') !== array_slice(array_column($steps, 'id'), -$expectedCount)) {
+                throw new RuntimeException("Étapes guidées incorrectes : $slug / $tier");
+            }
+
             $answers = array_column($steps, 'expected', 'id');
+            if ($scorer->grade($asked, $answers)['stars'] !== 5
+                || $scorer->grade($asked, [])['stars'] !== 0) {
+                throw new RuntimeException("Notation au palier incorrecte : $slug / $tier");
+            }
             if ($scorer->grade($steps, $answers)['stars'] !== 5) {
                 throw new RuntimeException("Correction invalide : $slug / $tier");
             }
@@ -93,4 +108,4 @@ foreach ($library->all() as $slug => $meta) {
     }
 }
 
-echo "OK : $cases exercices verifies aux trois paliers ; progression et anti-rejeu valides.\n";
+echo "OK : $cases exercices aux 3 paliers ; étayage, 5 étoiles, progression et anti-rejeu validés.\n";

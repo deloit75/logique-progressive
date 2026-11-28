@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Exercise\ExerciseLibrary;
 use App\Exercise\ExerciseScorer;
+use App\Exercise\ExerciseScaffolder;
 use App\Exercise\ExerciseToken;
 use App\Exercise\ProgressTracker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -74,6 +75,7 @@ final class ExerciseController extends AbstractController
         ExerciseLibrary $library,
         ExerciseToken $tokens,
         ExerciseScorer $scorer,
+        ExerciseScaffolder $scaffolder,
         ProgressTracker $progress,
     ): Response {
         $metadata = $library->find($slug);
@@ -109,11 +111,12 @@ final class ExerciseController extends AbstractController
         }
 
         $exercise = $library->build($slug, $params);
+        $askedSteps = $scaffolder->select($exercise['steps'], (int) ($params['tier'] ?? 1));
 
         if ($request->isMethod('POST') && $error === null) {
             $post = $request->request->all();
             $answers = is_array($post['answers'] ?? null) ? $post['answers'] : [];
-            $results = $scorer->grade($exercise['steps'], $answers);
+            $results = $scorer->grade($askedSteps, $answers);
 
             $record = $progress->record($state, $slug, $results['stars'], $token);
             if ($record['recorded']) {
@@ -131,7 +134,7 @@ final class ExerciseController extends AbstractController
         $visibleSteps = array_map(static function (array $step): array {
             unset($step['expected'], $step['explanation']);
             return $step;
-        }, $exercise['steps']);
+        }, $askedSteps);
 
         $all = $library->all();
         $nextSlug = $results === null ? null : $progress->recommend($state, $all, $slug);
@@ -142,6 +145,7 @@ final class ExerciseController extends AbstractController
             'story' => $exercise['story'],
             'table' => $exercise['table'],
             'steps' => $visibleSteps,
+            'correctionSteps' => $results === null ? [] : $exercise['steps'],
             'token' => $token,
             'results' => $results,
             'error' => $error,

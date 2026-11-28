@@ -45,7 +45,15 @@
   <p class="muted">{{ metadata.level }} · {{ metadata.subject }} · {{ metadata.duration }} min environ</p>
   <h1>{{ metadata.icon }} {{ metadata.title }}</h1>
   <p class="muted"><strong>Objectif :</strong> {{ metadata.skill }}.</p>
-  <p class="muted"><strong>Difficulté :</strong> palier {{ tier }} sur 3 (adapté aux essais de cette session).</p>
+  <p class="muted"><strong>Difficulté :</strong> palier {{ tier }} sur 3.
+    {% if tier == 1 %}
+      Quatre questions guidées pour construire le raisonnement.
+    {% elseif tier == 2 %}
+      Trois questions : la première étape est à retrouver sans aide.
+    {% else %}
+      Deux questions finales : retrouve seul les étapes intermédiaires.
+    {% endif %}
+  </p>
   <div class="story">
     {{ story }}
     {% if table is not null %}
@@ -96,16 +104,22 @@
 
     <section class="correction" aria-label="Correction détaillée">
       <h2>Correction expliquée</h2>
-      {% for step in steps %}
-        {% set feedback = results.steps[step.id] %}
+      {% for step in correctionSteps %}
+        {% set feedback = results.steps[step.id] ?? null %}
         <div class="result">
           <strong>{{ loop.index }}. {{ step.question }}</strong>
-          <p class="{{ feedback.correct ? 'ok' : 'miss' }}">
-            {{ feedback.correct ? 'Bonne réponse' : 'À revoir' }}
-            — {{ feedback.points }}/{{ feedback.max }} point(s)
+          {% if feedback is not null %}
+            <p class="{{ feedback.correct ? 'ok' : 'miss' }}">
+              {{ feedback.correct ? 'Bonne réponse' : 'À revoir' }}
+              — {{ feedback.points }}/{{ feedback.max }} point(s)
+            </p>
+          {% else %}
+            <p class="muted">Étape intermédiaire non demandée à ce palier (non notée).</p>
+          {% endif %}
+          <p><strong>Réponse attendue :</strong>
+            {{ step.type == 'choice' ? step.choices[step.expected] : step.expected }}
           </p>
-          <p><strong>Réponse attendue :</strong> {{ feedback.expected }}</p>
-          <p><strong>Explication :</strong> {{ feedback.explanation }}</p>
+          <p><strong>Explication :</strong> {{ step.explanation }}</p>
         </div>
       {% endfor %}
       <p><strong>Notion mobilisée :</strong> {{ metadata.skill }}.</p>
