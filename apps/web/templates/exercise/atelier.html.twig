@@ -34,6 +34,8 @@
     th, td { padding: 10px; text-align: left; border: 1px solid #dae2f3; }
     th { background: #e5ecff; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; align-items: center; }
+    .progress { background: #e9f4ed; padding: 14px; border-radius: 12px; margin-top: 16px; }
+    .progress a { color: #23486a; }
     @media (max-width: 650px) { main { margin: 0; padding: 20px; border-radius: 0; } }
   </style>
 </head>
@@ -43,6 +45,7 @@
   <p class="muted">{{ metadata.level }} · {{ metadata.subject }} · {{ metadata.duration }} min environ</p>
   <h1>{{ metadata.icon }} {{ metadata.title }}</h1>
   <p class="muted"><strong>Objectif :</strong> {{ metadata.skill }}.</p>
+  <p class="muted"><strong>Difficulté :</strong> palier {{ tier }} sur 3 (adapté aux essais de cette session).</p>
   <div class="story">
     {{ story }}
     {% if table is not null %}
@@ -85,6 +88,11 @@
     <h2>Mon résultat</h2>
     <p class="stars" aria-label="{{ results.stars }} étoiles sur 5">{% for i in 1..5 %}{{ i <= results.stars ? '★' : '☆' }}{% endfor %}</p>
     <p><strong>{{ results.stars }}/5 étoiles</strong> — tu peux progresser à ton rythme.</p>
+    {% if progressMessage %}
+      <div class="progress" role="status">{{ progressMessage }}
+        <a href="{{ path('exercise_progress') }}">Voir mon parcours</a>.
+      </div>
+    {% endif %}
 
     <section class="correction" aria-label="Correction détaillée">
       <h2>Correction expliquée</h2>
@@ -104,11 +112,14 @@
     </section>
     <div class="actions">
       <a class="button" href="{{ path('exercise_play', {slug: slug}) }}">Nouveau défi</a>
+      {% if nextSlug is not null %}
+        <a href="{{ path('exercise_play', {slug: nextSlug}) }}">Défi conseillé : {{ next.title }}</a>
+      {% endif %}
       <a href="{{ path('exercise_catalog') }}">Choisir un autre exercice</a>
     </div>
   {% endif %}
 
-  <p class="muted">Prototype : aucune donnée personnelle enregistrée et aucun crédit de temps d’écran.</p>
+  <p class="muted">Prototype : seuls les scores et les paliers de cette session sont conservés. Aucun compte, aucune cagnotte ni crédit de temps d’écran.</p>
 </main>
 </body>
 </html>

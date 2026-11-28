@@ -25,6 +25,9 @@
     .filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 20px 0 27px; }
     .filters a { padding: 9px 16px; border: 1px solid #c5d0e7; border-radius: 24px; color: #293d79; text-decoration: none; background: white; }
     .filters a[aria-current="page"] { color: white; background: #293d79; border-color: #293d79; }
+    .progress { background: #e9f4ed; padding: 18px 22px; border-radius: 14px; margin: 20px 0; }
+    .progress a { color: #23486a; font-weight: 650; }
+    .recommend { background: #eef2ff; padding: 18px 22px; border-radius: 14px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -35,6 +38,18 @@
     <h1>Choisis ton défi</h1>
     <p class="muted">Les défis renouvellent leurs données, et certains changent même de méthode lorsque tu recommences. Tu avances par étapes, puis tu découvres la démarche et les notions utilisées. Aucun compte n’est nécessaire pour cette démonstration.</p>
   </section>
+  <section class="progress" aria-label="Progression provisoire">
+    <strong>Mon parcours :</strong>
+    {{ progress.count }} {{ progress.count == 1 ? 'exercice corrigé' : 'exercices corrigés' }} dans cette session.
+    <a href="{{ path('exercise_progress') }}">Voir ma progression</a>
+  </section>
+  {% if progress.count > 0 and suggestedSlug is not null %}
+    <section class="recommend">
+      <strong>Prochain défi conseillé :</strong>
+      <a href="{{ path('exercise_play', {slug: suggestedSlug}) }}">{{ suggested.title }}</a>.
+      Une activité choisie selon tes essais précédents.
+    </section>
+  {% endif %}
   <nav class="filters" aria-label="Filtrer les exercices par niveau">
     <a href="{{ path('exercise_catalog') }}" {% if selectedLevel == 'tous' %}aria-current="page"{% endif %}>Tous les niveaux</a>
     <a href="{{ path('exercise_catalog', {niveau: 'cm2'}) }}" {% if selectedLevel == 'cm2' %}aria-current="page"{% endif %}>CM2</a>
@@ -56,7 +71,7 @@
     <a href="{{ path('exercise_crystals') }}">Le mystère des cristaux</a>.
     Il reste disponible dans cette première version.
   </div>
-  <p class="muted">Les étoiles illustrent la réussite de chaque exercice. Aucun résultat n’est enregistré, aucune minute d’écran n’est créditée.</p>
+  <p class="muted">La progression est conservée uniquement dans la session de ce navigateur. Aucun compte, aucune cagnotte et aucun crédit de temps d’écran.</p>
 </main>
 </body>
 </html>

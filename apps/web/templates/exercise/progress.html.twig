@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ma progression — Logique Progressive</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #23345b; background: #f5f7fc; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 900px; margin: 32px auto; padding: 32px; background: white; border-radius: 20px; }
+    a { color: #293d79; }
+    h1 { font-size: clamp(2rem, 5vw, 2.8rem); margin: 28px 0 8px; }
+    .muted { color: #596986; line-height: 1.65; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 25px 0; }
+    .card { padding: 20px; background: #f4f6fd; border: 1px solid #e0e6f4; border-radius: 14px; }
+    .card h2 { font-size: 1.06rem; margin-top: 0; }
+    .stat { font-size: 1.3rem; font-weight: 700; }
+    .recommend { padding: 18px; border-radius: 12px; background: #e9f4ed; margin: 18px 0; }
+    .button { display: inline-block; padding: 11px 18px; background: #293d79; color: white; border-radius: 9px; text-decoration: none; }
+    @media (max-width: 650px) { main { margin: 0; border-radius: 0; padding: 22px; } }
+  </style>
+</head>
+<body>
+<main>
+  <nav><a href="{{ path('exercise_catalog') }}">← Catalogue des exercices</a></nav>
+  <h1>Ma progression</h1>
+  <p class="stat">{{ progress.count }} {{ progress.count == 1 ? 'exercice comptabilisé' : 'exercices comptabilisés' }}</p>
+  <p class="muted">Ce tableau de bord suit provisoirement quatre familles de compétences dans la session en cours. Les paliers ne représentent pas une classe scolaire ni une évaluation définitive.</p>
+  <section class="grid" aria-label="Progression par compétence">
+    {% for group in progress.groups %}
+      <article class="card">
+        <h2>{{ group.label }}</h2>
+        <p><span class="stat">{{ group.count }}</span> {{ group.count == 1 ? 'essai' : 'essais' }}</p>
+        <p><strong>Palier {{ group.tier }}/3</strong></p>
+        <p class="muted">Meilleur résultat : {{ group.count > 0 ? group.best ~ '/5 étoiles' : 'pas encore évalué' }}</p>
+      </article>
+    {% endfor %}
+  </section>
+  <p class="muted"><strong>Comment ça marche ?</strong> Trois réussites récentes d’au moins 4 étoiles peuvent faire monter d’un palier. Plusieurs difficultés rapprochées peuvent faire baisser d’un palier. Une seule erreur n’entraîne aucune sanction.</p>
+  {% if suggestedSlug is not null %}
+    <section class="recommend">
+      <strong>Prochain exercice suggéré :</strong> {{ suggested.title }}.
+      <p><a class="button" href="{{ path('exercise_play', {slug: suggestedSlug}) }}">Essayer ce défi</a></p>
+    </section>
+  {% endif %}
+  <p class="muted">Les résultats sont liés à la session de ce navigateur et peuvent disparaître à son expiration. Aucun compte n’est créé, aucune minute d’écran n’est créditée, et ces résultats ne constituent pas une progression sauvegardée à long terme.</p>
+</main>
+</body>
+</html>

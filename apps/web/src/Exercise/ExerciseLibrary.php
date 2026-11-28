@@ -60,9 +60,9 @@ final class ExerciseLibrary
     }
 
     /** @return array<string, int|string> */
-    public function generateParameters(string $slug): array
+    public function generateParameters(string $slug, int $tier = 1): array
     {
-        return match ($slug) {
+        $parameters = match ($slug) {
             'suite-numerique' => SequenceVariants::generate(),
             'billets-musee' => [
                 'price' => random_int(5, 10),
@@ -74,6 +74,8 @@ final class ExerciseLibrary
             'bibliotheque' => $this->generateLibraryParameters(),
             default => AdditionalExercises::generate($slug),
         };
+
+        return DifficultyAdjuster::apply($slug, $parameters, $tier);
     }
 
     /**
