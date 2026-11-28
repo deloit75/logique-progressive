@@ -15,10 +15,25 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ExerciseController extends AbstractController
 {
     #[Route('/exercices', name: 'exercise_catalog', methods: ['GET'])]
-    public function catalog(ExerciseLibrary $library): Response
+    public function catalog(Request $request, ExerciseLibrary $library): Response
     {
+        $requested = $request->query->all()['niveau'] ?? 'tous';
+        $level = is_string($requested) && in_array($requested, ['cm2', '6e'], true)
+            ? $requested
+            : 'tous';
+
+        $exercises = $library->all();
+        if ($level !== 'tous') {
+            $target = $level === 'cm2' ? 'CM2' : '6e';
+            $exercises = array_filter(
+                $exercises,
+                static fn (array $exercise): bool => str_contains((string) $exercise['level'], $target),
+            );
+        }
+
         return $this->render('exercise/catalog.html.twig', [
-            'exercises' => $library->all(),
+            'exercises' => $exercises,
+            'selectedLevel' => $level,
         ]);
     }
 

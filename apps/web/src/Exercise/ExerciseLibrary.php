@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Exercise;
 
-use InvalidArgumentException;
-
 /**
  * Catalogue pedagogique : un modele stable, plusieurs instances aleatoires.
  * Les reponses attendues restent cote serveur.
@@ -22,7 +20,7 @@ final class ExerciseLibrary
                 'subject' => 'Suites et régularités',
                 'skill' => 'Identifier et prolonger une règle numérique',
                 'duration' => 6,
-                'version' => 1,
+                'version' => 2,
                 'icon' => '🔢',
             ],
             'billets-musee' => [
@@ -52,7 +50,7 @@ final class ExerciseLibrary
                 'version' => 1,
                 'icon' => '📚',
             ],
-        ];
+        ] + AdditionalExercises::all();
     }
 
     /** @return array<string, mixed>|null */
@@ -65,10 +63,7 @@ final class ExerciseLibrary
     public function generateParameters(string $slug): array
     {
         return match ($slug) {
-            'suite-numerique' => [
-                'first' => random_int(3, 18),
-                'gap' => random_int(2, 8),
-            ],
+            'suite-numerique' => SequenceVariants::generate(),
             'billets-musee' => [
                 'price' => random_int(5, 10),
                 'count' => random_int(3, 7),
@@ -77,7 +72,7 @@ final class ExerciseLibrary
             ],
             'enquete-animaux' => $this->generateAnimalParameters(),
             'bibliotheque' => $this->generateLibraryParameters(),
-            default => throw new InvalidArgumentException('Modèle inconnu.'),
+            default => AdditionalExercises::generate($slug),
         };
     }
 
@@ -88,11 +83,11 @@ final class ExerciseLibrary
     public function build(string $slug, array $params): array
     {
         return match ($slug) {
-            'suite-numerique' => $this->buildSequence($params),
+            'suite-numerique' => SequenceVariants::build($params),
             'billets-musee' => $this->buildMuseum($params),
             'enquete-animaux' => $this->buildAnimals($params),
             'bibliotheque' => $this->buildLibrary($params),
-            default => throw new InvalidArgumentException('Modèle inconnu.'),
+            default => AdditionalExercises::build($slug, $params),
         };
     }
 
@@ -116,35 +111,6 @@ final class ExerciseLibrary
         shuffle($numbers);
 
         return ['lundi' => $numbers[0], 'mardi' => $numbers[1], 'mercredi' => $numbers[2]];
-    }
-
-    /** @param array<string, mixed> $p */
-    private function buildSequence(array $p): array
-    {
-        $first = (int) $p['first'];
-        $gap = (int) $p['gap'];
-        $second = $first + $gap;
-        $third = $first + 2 * $gap;
-        $fourth = $first + 3 * $gap;
-        $sixth = $first + 5 * $gap;
-
-        return [
-            'story' => "Une machine affiche les nombres suivants : $first, $second, $third, ... Chaque nouveau nombre est obtenu avec la même règle. Retrouve cette règle avant de continuer la suite.",
-            'table' => null,
-            'steps' => [
-                $this->number('gap', 'De combien augmente-t-on à chaque étape ?', 1, $gap,
-                    "$second − $first = $gap. On ajoute toujours $gap."),
-                $this->number('fourth', 'Quel est le quatrième nombre ?', 1, $fourth,
-                    "$third + $gap = $fourth."),
-                $this->number('sixth', 'Quel est le sixième nombre ?', 2, $sixth,
-                    "On continue deux fois après le quatrième : $fourth + $gap + $gap = $sixth."),
-                $this->choice('rule', 'Quelle règle correspond à cette suite ?', 1, 'a', [
-                    'a' => 'Ajouter toujours la même quantité',
-                    'b' => 'Multiplier chaque nombre par deux',
-                    'c' => 'Alterner une addition et une soustraction',
-                ], 'Les écarts sont constants : c’est une suite additive.'),
-            ],
-        ];
     }
 
     /** @param array<string, mixed> $p */

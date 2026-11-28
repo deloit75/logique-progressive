@@ -22,6 +22,9 @@
     .card p { font-size: .94rem; line-height: 1.55; color: #596986; }
     .cta { margin-top: auto; color: #29477c; font-weight: 650; }
     .legacy { margin-top: 30px; padding: 20px 24px; border: 1px solid #dfe5f1; border-radius: 14px; background: white; }
+    .filters { display: flex; flex-wrap: wrap; gap: 9px; margin: 20px 0 27px; }
+    .filters a { padding: 9px 16px; border: 1px solid #c5d0e7; border-radius: 24px; color: #293d79; text-decoration: none; background: white; }
+    .filters a[aria-current="page"] { color: white; background: #293d79; border-color: #293d79; }
   </style>
 </head>
 <body>
@@ -30,8 +33,13 @@
   <section class="heading">
     <p class="muted">Première bibliothèque · CM2 à 6e</p>
     <h1>Choisis ton défi</h1>
-    <p class="muted">Chaque défi change ses données lorsque tu recommences. Tu avances par étapes, puis tu découvres la démarche et les notions utilisées. Aucun compte n’est nécessaire pour cette démonstration.</p>
+    <p class="muted">Les défis renouvellent leurs données, et certains changent même de méthode lorsque tu recommences. Tu avances par étapes, puis tu découvres la démarche et les notions utilisées. Aucun compte n’est nécessaire pour cette démonstration.</p>
   </section>
+  <nav class="filters" aria-label="Filtrer les exercices par niveau">
+    <a href="{{ path('exercise_catalog') }}" {% if selectedLevel == 'tous' %}aria-current="page"{% endif %}>Tous les niveaux</a>
+    <a href="{{ path('exercise_catalog', {niveau: 'cm2'}) }}" {% if selectedLevel == 'cm2' %}aria-current="page"{% endif %}>CM2</a>
+    <a href="{{ path('exercise_catalog', {niveau: '6e'}) }}" {% if selectedLevel == '6e' %}aria-current="page"{% endif %}>6e</a>
+  </nav>
   <section class="grid" aria-label="Catalogue des exercices">
     {% for slug, exercise in exercises %}
       <a class="card" href="{{ path('exercise_play', {slug: slug}) }}">

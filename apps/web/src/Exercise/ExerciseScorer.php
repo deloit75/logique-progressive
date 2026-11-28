@@ -25,6 +25,7 @@ final class ExerciseScorer
                 'number' => preg_match('/^[+]?[0-9]{1,9}$/D', $answer) === 1
                     && (int) $answer === $step['expected'],
                 'text' => $this->normalize($answer) === $this->normalize((string) $step['expected']),
+                'time' => $this->normalizeTime($answer) === (string) $step['expected'],
                 'choice' => $answer === $step['expected'],
                 default => false,
             };
@@ -43,6 +44,16 @@ final class ExerciseScorer
         }
 
         return ['stars' => $stars, 'steps' => $details];
+    }
+
+    /** Accepte 9:05, 09:05 et 09h05 pour une meme heure. */
+    private function normalizeTime(string $answer): ?string
+    {
+        if (!preg_match('/^([01]?[0-9]|2[0-3])[:hH]([0-5][0-9])$/D', $answer, $matches)) {
+            return null;
+        }
+
+        return sprintf('%02d:%02d', (int) $matches[1], (int) $matches[2]);
     }
 
     private function normalize(string $text): string
